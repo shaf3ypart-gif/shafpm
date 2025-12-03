@@ -95,7 +95,7 @@
             height: 100%;
         }
 
-                /* Mobile Responsive Styles */
+                                /* Mobile Responsive Styles */
         @media (max-width: 768px) {
             /* Hide Sidebar and Header Menu on Mobile */
             .sidebar, 
@@ -104,14 +104,14 @@
                 display: none !important;
             }
             
-            /* Bottom Navigation */
+            /* Bottom Navigation - Ultra Compact */
             .bottom-nav {
                 display: flex;
                 position: fixed;
                 bottom: 0;
                 left: 0;
                 width: 100%;
-                height: 60px;
+                height: 48px; /* Reduced further */
                 background-color: var(--bg-sidebar);
                 border-top: 1px solid var(--border-color);
                 z-index: 1000;
@@ -127,16 +127,16 @@
                 align-items: center;
                 justify-content: center;
                 color: var(--text-muted);
-                font-size: 0.7rem;
-                gap: 4px;
-                padding: 8px;
+                font-size: 0.65rem;
+                gap: 2px;
+                padding: 4px;
                 flex: 1;
                 height: 100%;
             }
             
             .bottom-nav-item svg {
-                width: 20px;
-                height: 20px;
+                width: 18px;
+                height: 18px;
             }
             
             .bottom-nav-item.active {
@@ -145,20 +145,20 @@
             
             /* Header Adjustments */
             .header {
-                height: 50px;
-                padding: 0 var(--space-md);
+                height: 40px; /* Reduced further */
+                padding: 0 var(--space-sm);
                 justify-content: center;
             }
             
             .page-title {
-                font-size: 1.125rem;
+                font-size: 1rem;
                 margin: 0;
             }
             
-            /* Content Area - Add padding for bottom nav */
+            /* Content Area */
             .content-area {
-                padding: var(--space-md);
-                padding-bottom: 80px;
+                padding: var(--space-sm);
+                padding-bottom: 60px;
             }
             
             /* Cards and Grids - Single Column */
@@ -166,54 +166,63 @@
                 grid-template-columns: 1fr !important;
             }
             
-            /* Compact UI Elements */
+            /* Ultra Compact UI Elements */
             .btn {
-                min-height: 36px;
-                padding: 0.5rem 0.75rem;
-                font-size: 0.875rem;
+                min-height: 28px !important; /* Aggressively reduced */
+                padding: 0.25rem 0.5rem !important;
+                font-size: 0.75rem !important;
+                line-height: 1.2;
             }
             
             .form-input,
             .form-select {
-                min-height: 36px;
-                padding: 0.5rem;
-                font-size: 0.875rem;
+                min-height: 28px !important; /* Aggressively reduced */
+                padding: 0.25rem 0.5rem !important;
+                font-size: 0.75rem !important;
             }
             
             .card {
-                padding: var(--space-md);
-                margin-bottom: var(--space-sm);
+                padding: 0.5rem !important;
+                margin-bottom: 0.5rem !important;
             }
             
-            /* Typography Adjustments */
-            h1 { font-size: 1.25rem; }
-            h2 { font-size: 1.125rem; }
-            h3 { font-size: 1rem; }
-            h4 { font-size: 0.9375rem; }
+            /* Dashboard Statistics Numbers - Override inline styles */
+            .card > div[style*="font-size: 2rem"] {
+                font-size: 1.25rem !important; /* Reduced from 2rem */
+                margin-top: 0.25rem !important;
+            }
+            
+            /* Typography Adjustments - High Density */
+            body { font-size: 12px; }
+            h1 { font-size: 1rem; }
+            h2 { font-size: 0.9rem; }
+            h3 { font-size: 0.85rem; }
+            h4 { font-size: 0.8rem; }
             
             /* Modal Adjustments */
             .modal {
-                max-width: calc(100vw - 2rem);
-                margin: 1rem;
-                padding: var(--space-md);
+                max-width: calc(100vw - 1rem);
+                margin: 0.5rem;
+                padding: 0.75rem;
             }
             
             /* Kanban Board */
             .kanban-board {
-                height: calc(100vh - 140px);
-                padding-bottom: var(--space-sm);
+                height: calc(100vh - 100px);
+                padding-bottom: 0.25rem;
             }
             
             .kanban-column {
-                flex: 0 0 260px;
-                min-width: 260px;
+                flex: 0 0 220px; /* Reduced width */
+                min-width: 220px;
             }
             
             /* Reduce spacing variables for mobile */
             :root {
-                --space-xl: 1rem;
-                --space-lg: 0.75rem;
-                --space-md: 0.5rem;
+                --space-xl: 0.5rem;
+                --space-lg: 0.375rem;
+                --space-md: 0.25rem;
+                --space-sm: 0.125rem;
             }
         }
         
@@ -222,6 +231,8 @@
             .bottom-nav {
                 display: none;
             }
+        }
+        }
         }
 
             .page-title {
