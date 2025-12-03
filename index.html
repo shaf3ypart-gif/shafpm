@@ -94,30 +94,163 @@
             width: 100%;
             height: 100%;
         }
-        
+
+                /* Mobile Responsive Styles */
         @media (max-width: 768px) {
-            .sidebar {
-                width: 60px;
-                overflow: hidden;
+            /* Hide Sidebar and Header Menu on Mobile */
+            .sidebar, 
+            #menu-toggle,
+            .mobile-backdrop {
+                display: none !important;
             }
             
-            .sidebar .brand span,
-            .sidebar .nav-item span:not(:first-child) {
-                display: none;
+            /* Bottom Navigation */
+            .bottom-nav {
+                display: flex;
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                height: 60px;
+                background-color: var(--bg-sidebar);
+                border-top: 1px solid var(--border-color);
+                z-index: 1000;
+                justify-content: space-around;
+                align-items: center;
+                padding-bottom: env(safe-area-inset-bottom);
+                box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
             }
             
-            .sidebar .brand {
+            .bottom-nav-item {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
                 justify-content: center;
-                padding: var(--space-sm);
+                color: var(--text-muted);
+                font-size: 0.7rem;
+                gap: 4px;
+                padding: 8px;
+                flex: 1;
+                height: 100%;
             }
             
-            .sidebar .nav-item {
+            .bottom-nav-item svg {
+                width: 20px;
+                height: 20px;
+            }
+            
+            .bottom-nav-item.active {
+                color: var(--primary);
+            }
+            
+            /* Header Adjustments */
+            .header {
+                height: 50px;
+                padding: 0 var(--space-md);
                 justify-content: center;
+            }
+            
+            .page-title {
+                font-size: 1.125rem;
+                margin: 0;
+            }
+            
+            /* Content Area - Add padding for bottom nav */
+            .content-area {
+                padding: var(--space-md);
+                padding-bottom: 80px;
+            }
+            
+            /* Cards and Grids - Single Column */
+            .content-area > div[style*="grid-template-columns"] {
+                grid-template-columns: 1fr !important;
+            }
+            
+            /* Compact UI Elements */
+            .btn {
+                min-height: 36px;
+                padding: 0.5rem 0.75rem;
+                font-size: 0.875rem;
+            }
+            
+            .form-input,
+            .form-select {
+                min-height: 36px;
+                padding: 0.5rem;
+                font-size: 0.875rem;
+            }
+            
+            .card {
+                padding: var(--space-md);
+                margin-bottom: var(--space-sm);
+            }
+            
+            /* Typography Adjustments */
+            h1 { font-size: 1.25rem; }
+            h2 { font-size: 1.125rem; }
+            h3 { font-size: 1rem; }
+            h4 { font-size: 0.9375rem; }
+            
+            /* Modal Adjustments */
+            .modal {
+                max-width: calc(100vw - 2rem);
+                margin: 1rem;
                 padding: var(--space-md);
             }
             
-            .sidebar .nav-item span:first-child {
-                margin: 0;
+            /* Kanban Board */
+            .kanban-board {
+                height: calc(100vh - 140px);
+                padding-bottom: var(--space-sm);
+            }
+            
+            .kanban-column {
+                flex: 0 0 260px;
+                min-width: 260px;
+            }
+            
+            /* Reduce spacing variables for mobile */
+            :root {
+                --space-xl: 1rem;
+                --space-lg: 0.75rem;
+                --space-md: 0.5rem;
+            }
+        }
+        
+        /* Hide bottom nav on desktop */
+        @media (min-width: 769px) {
+            .bottom-nav {
+                display: none;
+            }
+        }
+
+            .page-title {
+                font-size: 0.9375rem;
+            }
+
+            .content-area {
+                padding: var(--space-sm);
+            }
+
+            .kanban-column {
+                flex: 0 0 260px;
+                min-width: 260px;
+            }
+
+            .modal {
+                padding: var(--space-md);
+            }
+
+            h2 {
+                font-size: 1.125rem;
+            }
+
+            h3 {
+                font-size: 1rem;
+            }
+
+            .btn {
+                font-size: 0.875rem;
             }
         }
 
@@ -378,6 +511,7 @@
                 opacity: 0;
                 transform: translateY(10px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -485,7 +619,51 @@
                 <!-- Tasks content will be loaded here -->
             </div>
         </main>
+
+        <!-- Bottom Navigation Bar -->
+        <nav class="bottom-nav">
+            <a href="#" class="bottom-nav-item active" data-view="dashboard"
+                onclick="navigateTo('dashboard'); return false;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="14" width="7" height="7"></rect>
+                    <rect x="3" y="14" width="7" height="7"></rect>
+                </svg>
+                <span>Dash</span>
+            </a>
+            <a href="#" class="bottom-nav-item" data-view="tasks" onclick="navigateTo('tasks'); return false;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 20h9"></path>
+                    <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+                </svg>
+                <span>Tasks</span>
+            </a>
+            <a href="#" class="bottom-nav-item" data-view="claims" onclick="navigateTo('claims'); return false;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                </svg>
+                <span>Claims</span>
+            </a>
+            <a href="#" class="bottom-nav-item" data-view="projects" onclick="navigateTo('projects'); return false;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                </svg>
+                <span>Projects</span>
+            </a>
+            <a href="#" class="bottom-nav-item" data-view="team" onclick="navigateTo('team'); return false;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
+                <span>Team</span>
+            </a>
+        </nav>
     </div>
+    <!-- Mobile Backdrop -->
+    <div class="mobile-backdrop" id="mobile-backdrop"></div>
     <div class="modal-overlay" id="team-modal">
         <div class="modal">
             <h2 id="team-modal-title">Add Team Member</h2>
@@ -584,7 +762,7 @@
             </form>
         </div>
     </div>
-    
+
     <div class="modal-overlay" id="claim-modal">
         <div class="modal">
             <h2 id="claim-modal-title">Create New Claim</h2>
@@ -609,9 +787,9 @@
             </form>
         </div>
     </div>
-    
 
-    
+
+
     <script>
         function generateUUID() {
             return 'xxxxxxxxxxxx4xxxyxxxxxxxxxxxxxxx'.replace(/[xy]/g, c => {
@@ -643,26 +821,26 @@
                         const db = e.target.result;
                         console.log("Upgrading DB from version", e.oldVersion, "to", e.newVersion);
                         console.log("Existing stores:", Array.from(db.objectStoreNames).join(', '));
-                        
+
                         // Handle version upgrades properly
                         if (e.oldVersion < 1) {
                             // Version 1: Initial setup
                             db.createObjectStore('tasks', { keyPath: 'id' });
                             db.createObjectStore('team', { keyPath: 'id' });
                         }
-                        
+
                         if (e.oldVersion < 2) {
                             // Version 2: Add projects store
                             db.createObjectStore('projects', { keyPath: 'id' });
                         }
-                        
+
                         if (e.oldVersion < 4) {
                             // Version 4: Add claims store
                             db.createObjectStore('claims', { keyPath: 'id' });
                         }
-                        
-                        
-                        
+
+
+
                         // Ensure all stores exist (fallback for any missing stores)
                         if (!db.objectStoreNames.contains('tasks')) {
                             console.log("Creating tasks store");
@@ -681,7 +859,7 @@
                             db.createObjectStore('claims', { keyPath: 'id' });
                         }
 
-                        
+
                         console.log("Stores after upgrade:", Array.from(db.objectStoreNames).join(', '));
                     };
                 });
@@ -693,7 +871,7 @@
                     console.error(`Store ${storeName} does not exist. Available stores:`, Array.from(this.db.objectStoreNames).join(', '));
                     return Promise.reject(new Error(`Object store '${storeName}' not found`));
                 }
-                
+
                 return new Promise((resolve, reject) => {
                     const tx = this.db.transaction([storeName], "readonly");
                     const store = tx.objectStore(storeName);
@@ -715,7 +893,7 @@
                     console.error(`Store ${storeName} does not exist. Available stores:`, Array.from(this.db.objectStoreNames).join(', '));
                     return Promise.reject(new Error(`Object store '${storeName}' not found`));
                 }
-                
+
                 return new Promise((resolve, reject) => {
                     const tx = this.db.transaction([storeName], "readwrite");
                     const store = tx.objectStore(storeName);
@@ -737,7 +915,7 @@
                     console.error(`Store ${storeName} does not exist. Available stores:`, Array.from(this.db.objectStoreNames).join(', '));
                     return Promise.reject(new Error(`Object store '${storeName}' not found`));
                 }
-                
+
                 return new Promise((resolve, reject) => {
                     const tx = this.db.transaction([storeName], "readwrite");
                     const store = tx.objectStore(storeName);
@@ -759,7 +937,7 @@
                     console.error(`Store ${storeName} does not exist. Available stores:`, Array.from(this.db.objectStoreNames).join(', '));
                     return Promise.reject(new Error(`Object store '${storeName}' not found`));
                 }
-                
+
                 return new Promise((resolve, reject) => {
                     const tx = this.db.transaction([storeName], "readwrite");
                     const store = tx.objectStore(storeName);
@@ -780,7 +958,7 @@
             currentView: 'dashboard',
             data: { tasks: [], projects: [], team: [], claims: [] }
         };
-        
+
         // Initialize task tab state
         window.currentTaskTab = 'my';
         const DOM = {
@@ -813,13 +991,13 @@
             document.getElementById('task-modal-title').textContent = 'Create New Task';
             openModal('task-modal');
         };
-        
+
         // Custom modal for my tasks
         window.openMyTaskModal = (taskType) => {
             document.getElementById('task-form').reset();
             document.getElementById('task-id').value = '';
             document.getElementById('task-modal-title').textContent = taskType === 'self' ? 'Create Self Task' : 'Create Lead Task';
-            
+
             // Set task type in a hidden field
             let taskTypeField = document.getElementById('task-type');
             if (!taskTypeField) {
@@ -830,16 +1008,16 @@
                 document.getElementById('task-form').appendChild(taskTypeField);
             }
             taskTypeField.value = taskType;
-            
+
             openModal('task-modal');
         };
-        
+
         // Custom modal for team tasks
         window.openTeamTaskModal = (memberId, memberName) => {
             document.getElementById('task-form').reset();
             document.getElementById('task-id').value = '';
             document.getElementById('task-modal-title').textContent = `Create Task for ${memberName}`;
-            
+
             // Set assigned member in a hidden field
             let assignedToField = document.getElementById('assigned-to');
             if (!assignedToField) {
@@ -850,10 +1028,10 @@
                 document.getElementById('task-form').appendChild(assignedToField);
             }
             assignedToField.value = memberId;
-            
+
             openModal('task-modal');
         };
-        
+
         window.markTaskComplete = async (id) => {
             const task = State.data.tasks.find(t => t.id === id);
             if (task) {
@@ -878,7 +1056,7 @@
                 openModal('task-modal');
             }
         };
-        
+
         window.editMyTask = (id) => {
             const task = State.data.tasks.find(t => t.id === id);
             if (task) {
@@ -932,7 +1110,7 @@
                 renderProjects();
             }
         };
-        
+
         // Claim functions
         window.openClaimModal = () => {
             document.getElementById('claim-form').reset();
@@ -940,7 +1118,7 @@
             document.getElementById('claim-modal-title').textContent = 'Create New Claim';
             openModal('claim-modal');
         };
-        
+
         window.editClaim = (id) => {
             const claim = State.data.claims.find(c => c.id === id);
             if (claim) {
@@ -952,7 +1130,7 @@
                 openModal('claim-modal');
             }
         };
-        
+
         window.deleteClaim = async (id) => {
             if (confirm('Delete this claim?')) {
                 await db.delete('claims', id);
@@ -960,7 +1138,7 @@
                 renderClaims();
             }
         };
-        
+
         window.markClaimComplete = async (id) => {
             const claim = State.data.claims.find(c => c.id === id);
             if (claim) {
@@ -970,7 +1148,7 @@
                 renderClaims();
             }
         };
-        
+
         // Reminder functions
         window.openReminderModal = () => {
             document.getElementById('reminder-form').reset();
@@ -978,7 +1156,7 @@
             document.getElementById('reminder-modal-title').textContent = 'Create New Reminder';
             openModal('reminder-modal');
         };
-        
+
         window.editReminder = (id) => {
             const reminder = State.data.reminders.find(r => r.id === id);
             if (reminder) {
@@ -991,7 +1169,7 @@
                 openModal('reminder-modal');
             }
         };
-        
+
         window.deleteReminder = async (id) => {
             if (confirm('Delete this reminder?')) {
                 await db.delete('reminders', id);
@@ -999,8 +1177,8 @@
                 renderReminders();
             }
         };
-        
-        
+
+
         // populateTeamMembersDropdown function removed as per requirements
         function getTeamMemberNameById(id) {
             if (!id) return 'Unassigned';
@@ -1010,7 +1188,7 @@
         function switchTaskTab(tab) {
             // Update global state
             window.currentTaskTab = tab;
-            
+
             // Update UI to show active tab
             document.getElementById('tab-my').style.backgroundColor = '';
             document.getElementById('tab-my').style.color = '';
@@ -1020,7 +1198,7 @@
             document.getElementById('tab-team').style.color = '';
             document.getElementById('tab-team').style.borderColor = '';
             document.getElementById('tab-team').style.fontWeight = 'normal';
-            
+
             if (tab === 'my') {
                 document.getElementById('tab-my').style.backgroundColor = 'var(--primary)';
                 document.getElementById('tab-my').style.color = 'white';
@@ -1032,7 +1210,7 @@
                 document.getElementById('tab-team').style.borderColor = 'var(--primary)';
                 document.getElementById('tab-team').style.fontWeight = 'bold';
             }
-            
+
             // Re-render the task board
             renderTaskBoard();
         }
@@ -1040,10 +1218,10 @@
             const select = document.getElementById('team-member-filter');
             // Save current selection
             const currentValue = select.value;
-            
+
             // Clear existing options except the first one
             select.innerHTML = '<option value="">All Team Members</option>';
-            
+
             // Add team members
             State.data.team.forEach(member => {
                 const option = document.createElement('option');
@@ -1051,7 +1229,7 @@
                 option.textContent = member.name;
                 select.appendChild(option);
             });
-            
+
             // Restore selection
             select.value = currentValue;
         }
@@ -1081,13 +1259,13 @@
                 renderTaskBoard();
             }
         };
-        
+
         // Drag and drop functions for team member tasks
         window.dragTeamTask = (ev, id) => {
             ev.dataTransfer.setData("text/plain", id);
             ev.target.classList.add('dragging');
         };
-        
+
         window.dropTeamTask = async (ev, status) => {
             ev.preventDefault();
             const id = ev.dataTransfer.getData("text/plain");
@@ -1099,26 +1277,35 @@
                 renderTaskBoard(); // This will re-render the entire board including team sections
             }
         };
-        window.navigateTo = (view) => {
+                window.navigateTo = (view) => {
             State.currentView = view;
+            
+            // Update Sidebar Nav
             DOM.navItems.forEach(item => {
                 if (item.dataset.view === view) item.classList.add('active');
                 else item.classList.remove('active');
             });
+            
+            // Update Bottom Nav
+            document.querySelectorAll('.bottom-nav-item').forEach(item => {
+                if (item.dataset.view === view) item.classList.add('active');
+                else item.classList.remove('active');
+            });
+            
             DOM.pageTitle.textContent = view.charAt(0).toUpperCase() + view.slice(1);
             renderView(view);
             
             // Close sidebar on mobile after navigation
-            if (window.innerWidth <= 768) {
-                document.getElementById('sidebar').style.width = '60px';
+            if (window.innerWidth <= 768 && typeof closeMobileMenu === 'function') {
+                closeMobileMenu();
             }
         };
-        
+
         // Mobile menu toggle
         window.toggleMenu = () => {
             const sidebar = document.getElementById('sidebar');
             const computedWidth = parseInt(getComputedStyle(sidebar).width);
-            
+
             if (computedWidth <= 70) {
                 sidebar.style.width = '260px';
             } else {
@@ -1138,16 +1325,16 @@
             // Calculate My Tasks (self tasks assigned to 'self')
             const selfTasks = State.data.tasks.filter(t => t.assignedTo === 'self');
             const myTaskCount = selfTasks.length;
-            
+
             // Calculate Team Tasks (only tasks assigned to actual team members, excluding 'self' tasks)
             const teamIds = State.data.team.map(member => member.id);
             const teamTasks = State.data.tasks.filter(t => t.assignedTo && t.assignedTo !== '' && t.assignedTo !== 'self' && teamIds.includes(t.assignedTo));
             const teamTaskCount = teamTasks.length;
-            
+
             // Calculate Pending Claims (not completed claims)
             const pendingClaims = State.data.claims.filter(c => c.status !== 'done');
             const pendingClaimCount = pendingClaims.length;
-            
+
             const projectCount = State.data.projects.length;
             const teamCount = State.data.team.length;
             const today = new Date(); today.setHours(0, 0, 0, 0);
@@ -1180,7 +1367,7 @@
         }
         function renderTaskBoard() {
             const tasks = State.data.tasks;
-            
+
             // Tab navigation - only My Tasks and Team Tasks
             let html = `
                 <div class="flex justify-between items-center" style="margin-bottom: var(--space-lg);">
@@ -1192,12 +1379,12 @@
                         <button class="btn" onclick="switchTaskTab('team')" id="tab-team">Team Tasks</button>
                     </div>
                 </div>`;
-            
+
             // Apply active styles after element creation
             setTimeout(() => {
                 const myTab = document.getElementById('tab-my');
                 const teamTab = document.getElementById('tab-team');
-                
+
                 if (window.currentTaskTab === 'my') {
                     myTab.style.backgroundColor = 'var(--primary)';
                     myTab.style.color = 'white';
@@ -1207,7 +1394,7 @@
                     myTab.style.color = '';
                     myTab.style.fontWeight = 'normal';
                 }
-                
+
                 if (window.currentTaskTab === 'team') {
                     teamTab.style.backgroundColor = 'var(--primary)';
                     teamTab.style.color = 'white';
@@ -1218,47 +1405,47 @@
                     teamTab.style.fontWeight = 'normal';
                 }
             }, 0);
-            
+
             // Render based on current tab
             if (window.currentTaskTab === 'my') {
                 html += renderMyTasksView();
             } else if (window.currentTaskTab === 'team') {
                 html += renderTeamTasksView();
             }
-            
+
             DOM.contentArea.innerHTML = html;
         }
-        
+
         // Store section states in localStorage
         function getSectionState(sectionId) {
             const state = localStorage.getItem(`section_${sectionId}_expanded`);
             return state === 'true'; // defaults to false if not found
         }
-        
+
         function setSectionState(sectionId, isExpanded) {
             localStorage.setItem(`section_${sectionId}_expanded`, isExpanded);
         }
-        
+
         function renderMyTasksView() {
             // Filter tasks for self tasks (tasks assigned to 'self')
             const selfTasks = State.data.tasks.filter(t => t.assignedTo === 'self');
-            
+
             // Filter lead tasks (unassigned tasks)
             const leadTasks = State.data.tasks.filter(t => !t.assignedTo || t.assignedTo === '');
-            
+
             // Filter completed tasks for both sections
             const completedSelfTasks = selfTasks.filter(t => t.status === 'done');
             const activeSelfTasks = selfTasks.filter(t => t.status !== 'done');
-            
+
             const completedLeadTasks = leadTasks.filter(t => t.status === 'done');
             const activeLeadTasks = leadTasks.filter(t => t.status !== 'done');
-            
+
             // Check section states
             const isSelfExpanded = getSectionState('self');
             const isLeadExpanded = getSectionState('lead');
             const isSelfCompletedExpanded = getSectionState('self_completed');
             const isLeadCompletedExpanded = getSectionState('lead_completed');
-            
+
             let html = `
                 <div style="margin-bottom: var(--space-lg);">
                     <!-- Self Tasks Section -->
@@ -1307,17 +1494,17 @@
                         </div>
                     </div>
                 </div>`;
-            
+
             return html;
         }
-        
+
         function renderTaskList(tasks, containerType) {
             if (tasks.length === 0) {
                 return '<p class="text-muted">No tasks found.</p>';
             }
-            
+
             let html = '<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: var(--space-md);">';
-            
+
             tasks.forEach(task => {
                 const priorityColor = getPriorityColor(task.priority);
                 html += `
@@ -1337,25 +1524,25 @@
                                 <span style="width: 8px; height: 8px; border-radius: 50%; background-color: ${priorityColor};" title="${task.priority || 'No Priority'}"></span>
                             </div>
                         </div>
-                        ${containerType.includes('active') ? 
-                            `<button class="btn" onclick="markTaskComplete('${task.id}')" style="margin-top: var(--space-md); width: 100%;">Mark Complete</button>` : 
-                            `<div style="margin-top: var(--space-md); width: 100%; text-align: center; padding: 0.5rem; background-color: var(--success); color: white; border-radius: var(--radius-md);">Completed</div>`}
+                        ${containerType.includes('active') ?
+                        `<button class="btn" onclick="markTaskComplete('${task.id}')" style="margin-top: var(--space-md); width: 100%;">Mark Complete</button>` :
+                        `<div style="margin-top: var(--space-md); width: 100%; text-align: center; padding: 0.5rem; background-color: var(--success); color: white; border-radius: var(--radius-md);">Completed</div>`}
                     </div>`;
             });
-            
+
             html += '</div>';
             return html;
         }
-        
+
         function getPriorityColor(priority) {
             const priorityColors = { 'High': '#f87171', 'Medium': '#fbbf24', 'Low': '#34d399' };
             return priorityColors[priority] || '#94a3b8';
         }
-        
+
         function toggleSection(sectionId) {
             const section = document.getElementById(`section-${sectionId}`);
             const toggle = document.getElementById(`toggle-${sectionId}`);
-            
+
             if (section.classList.contains('hidden')) {
                 section.classList.remove('hidden');
                 toggle.textContent = '▲';
@@ -1366,17 +1553,17 @@
                 setSectionState(sectionId, false);
             }
         }
-        
 
-        
+
+
         function renderTeamTasksView() {
             const tasks = State.data.tasks;
             const team = State.data.team;
-            
+
             let html = `<div style="margin-bottom: var(--space-lg);">
                 <button class="btn btn-primary" onclick="openTeamModal()" style="margin-bottom: var(--space-lg);">+ Create Team</button>
                 <div id="team-sections">`;
-            
+
             // Group tasks by team member
             const tasksByTeamMember = {};
             tasks.forEach(task => {
@@ -1387,32 +1574,32 @@
                     tasksByTeamMember[task.assignedTo].push(task);
                 }
             });
-            
+
             // Sort team members by task count (descending) and then alphabetically
             const sortedTeam = [...team].sort((a, b) => {
                 const aTasks = tasksByTeamMember[a.id] || [];
                 const bTasks = tasksByTeamMember[b.id] || [];
                 const aTaskCount = aTasks.length;
                 const bTaskCount = bTasks.length;
-                
+
                 // First sort by task count (descending)
                 if (aTaskCount !== bTaskCount) {
                     return bTaskCount - aTaskCount;
                 }
-                
+
                 // If task counts are equal, sort alphabetically
                 return a.name.localeCompare(b.name);
             });
-            
+
             // Create a section for each team member
             sortedTeam.forEach(member => {
                 const memberTasks = tasksByTeamMember[member.id] || [];
                 const completedMemberTasks = memberTasks.filter(t => t.status === 'done');
                 const activeMemberTasks = memberTasks.filter(t => t.status !== 'done');
-                
+
                 // Check section state
                 const isMemberExpanded = getSectionState(`team_${member.id}`);
-                
+
                 html += `
                     <div class="card" style="margin-bottom: var(--space-md);">
                         <div class="flex justify-between items-center" style="cursor: pointer;" onclick="toggleTeamSection('${member.id}')">
@@ -1436,15 +1623,15 @@
                         </div>
                     </div>`;
             });
-            
+
             // Handle unassigned tasks
             const unassignedTasks = tasks.filter(t => !t.assignedTo);
             const completedUnassignedTasks = unassignedTasks.filter(t => t.status === 'done');
             const activeUnassignedTasks = unassignedTasks.filter(t => t.status !== 'done');
-            
+
             // Check section state
             const isUnassignedExpanded = getSectionState('team_unassigned');
-            
+
             html += `
                 <div class="card" style="margin-bottom: var(--space-md);">
                     <div class="flex justify-between items-center" style="cursor: pointer;" onclick="toggleTeamSection('unassigned')">
@@ -1467,25 +1654,25 @@
                         </div>
                     </div>
                 </div>`;
-            
+
             html += `</div></div>`;
             return html;
         }
-        
+
         function renderTeamMemberTasks(tasks) {
             if (tasks.length === 0) {
                 return '<p class="text-muted">No tasks assigned</p>';
             }
-            
+
             const priorityColors = { 'High': '#f87171', 'Medium': '#fbbf24', 'Low': '#34d399' };
-            
+
             // Create task cards similar to My Tasks layout
             let html = '<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: var(--space-md);">';
-            
+
             tasks.forEach(task => {
                 const priorityColor = priorityColors[task.priority] || '#94a3b8';
                 const isCompleted = task.status === 'done';
-                
+
                 html += `
                     <div class="card" style="position: relative;">
                         <div class="flex justify-between items-start">
@@ -1503,20 +1690,20 @@
                                 <span style="width: 8px; height: 8px; border-radius: 50%; background-color: ${priorityColor};" title="${task.priority || 'No Priority'}"></span>
                             </div>
                         </div>
-                        ${isCompleted ? 
-                            `<div style="margin-top: var(--space-md); width: 100%; text-align: center; padding: 0.5rem; background-color: var(--success); color: white; border-radius: var(--radius-md);">Completed</div>` : 
-                            `<button class="btn" onclick="markTaskComplete('${task.id}')" style="margin-top: var(--space-md); width: 100%;">Mark Complete</button>`}
+                        ${isCompleted ?
+                        `<div style="margin-top: var(--space-md); width: 100%; text-align: center; padding: 0.5rem; background-color: var(--success); color: white; border-radius: var(--radius-md);">Completed</div>` :
+                        `<button class="btn" onclick="markTaskComplete('${task.id}')" style="margin-top: var(--space-md); width: 100%;">Mark Complete</button>`}
                     </div>`;
             });
-            
+
             html += '</div>';
             return html;
         }
-        
+
         function toggleTeamSection(memberId) {
             const tasksContainer = document.getElementById(`team-tasks-${memberId}`);
             const toggleIcon = document.getElementById(`team-toggle-${memberId}`);
-            
+
             if (tasksContainer.classList.contains('hidden')) {
                 tasksContainer.classList.remove('hidden');
                 toggleIcon.textContent = '▲';
@@ -1543,14 +1730,14 @@
 
         function renderClaims() {
             const claims = State.data.claims;
-            
+
             // Filter active and completed claims
             const activeClaims = claims.filter(c => c.status !== 'done');
             const completedClaims = claims.filter(c => c.status === 'done');
-            
+
             // Check section state
             const isCompletedExpanded = getSectionState('claims_completed');
-            
+
             let html = `
                 <div class="flex justify-between items-center" style="margin-bottom: var(--space-lg);">
                     <h2>Claims</h2>
@@ -1579,21 +1766,21 @@
                         </div>
                     </div>
                 </div>`;
-            
+
             DOM.contentArea.innerHTML = html;
         }
-        
+
         function renderClaimList(claims, containerType) {
             if (claims.length === 0) {
                 return '<p class="text-muted">No claims found.</p>';
             }
-            
+
             let html = '<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: var(--space-md);">';
-            
+
             claims.forEach(claim => {
                 const claimDate = new Date(claim.date);
                 const formattedDate = claimDate.toLocaleDateString();
-                
+
                 html += `
                     <div class="card" style="position: relative;">
                         <div class="flex justify-between items-start">
@@ -1607,17 +1794,17 @@
                             <span style="font-weight: 600; color: var(--success);">$${parseFloat(claim.cost).toFixed(2)}</span>
                             <span class="text-sm text-muted">${formattedDate}</span>
                         </div>
-                        ${containerType === 'active' ? 
-                            `<button class="btn" onclick="markClaimComplete('${claim.id}')" style="margin-top: var(--space-md); width: 100%;">Mark Complete</button>` : 
-                            `<div style="margin-top: var(--space-md); width: 100%; text-align: center; padding: 0.5rem; background-color: var(--success); color: white; border-radius: var(--radius-md);">Completed</div>`}
+                        ${containerType === 'active' ?
+                        `<button class="btn" onclick="markClaimComplete('${claim.id}')" style="margin-top: var(--space-md); width: 100%;">Mark Complete</button>` :
+                        `<div style="margin-top: var(--space-md); width: 100%; text-align: center; padding: 0.5rem; background-color: var(--success); color: white; border-radius: var(--radius-md);">Completed</div>`}
                     </div>`;
             });
-            
+
             html += '</div>';
             return html;
         }
 
-        
+
         DOM.navItems.forEach(item => item.addEventListener('click', (e) => {
             e.preventDefault();
             const view = item.dataset.view;
@@ -1627,12 +1814,12 @@
             // Menu toggle for mobile
             const menuToggle = document.getElementById('menu-toggle');
             menuToggle.addEventListener('click', toggleMenu);
-            
+
             // Handle window resize for responsive sidebar
             window.addEventListener('resize', () => {
                 const sidebar = document.getElementById('sidebar');
                 const menuToggle = document.getElementById('menu-toggle');
-                
+
                 if (window.innerWidth <= 768) {
                     menuToggle.style.display = 'block';
                     sidebar.style.width = '60px';
@@ -1641,13 +1828,13 @@
                     sidebar.style.width = '260px';
                 }
             });
-            
+
             // Initialize mobile view
             if (window.innerWidth <= 768) {
                 document.getElementById('menu-toggle').style.display = 'block';
                 document.getElementById('sidebar').style.width = '60px';
             }
-            
+
             document.getElementById('team-form').addEventListener('submit', async (e) => {
                 e.preventDefault();
                 try {
@@ -1686,7 +1873,7 @@
                     const id = formData.get('id');
                     const taskType = formData.get('task-type'); // Get task type for my tasks
                     const assignedTo = formData.get('assigned-to'); // Get assigned member for team tasks
-                    
+
                     if (id) {
                         const task = State.data.tasks.find(t => t.id === id);
                         if (task) {
@@ -1710,7 +1897,7 @@
                                 assignedToValue = '';
                             }
                         }
-                        
+
                         const newTask = {
                             id: generateUUID(),
                             title: formData.get('title'),
@@ -1766,7 +1953,7 @@
                     alert("Failed to save project.");
                 }
             });
-            
+
             document.getElementById('claim-form').addEventListener('submit', async (e) => {
                 e.preventDefault();
                 try {
@@ -1803,8 +1990,8 @@
                     alert("Failed to save claim.");
                 }
             });
-            
-            
+
+
         }
         async function init() {
             console.log('Shafey PM Initialized');
@@ -1814,7 +2001,7 @@
                 State.data.projects = await db.getAll('projects');
                 State.data.team = await db.getAll('team');
                 State.data.claims = await db.getAll('claims');
-                
+
                 // Data migration for existing tasks
                 State.data.tasks = State.data.tasks.map(task => {
                     if (task.assignedTo === undefined) {
@@ -1822,9 +2009,9 @@
                     }
                     return task;
                 });
-                
-                
-                
+
+
+
                 console.log('Data loaded:', State.data);
                 setupEventListeners();
                 // Small delay to ensure DOM elements are ready
@@ -1843,6 +2030,45 @@
             // DOM is already loaded
             init();
         }
+
+
+        // Mobile Menu Enhancement - Override toggleMenu with overlay pattern
+        window.toggleMenu = () => {
+            const sidebar = document.getElementById('sidebar');
+            if (sidebar && sidebar.classList.contains('mobile-open')) {
+                closeMobileMenu();
+            } else {
+                openMobileMenu();
+            }
+        };
+
+        function openMobileMenu() {
+            const sidebar = document.getElementById('sidebar');
+            const backdrop = document.getElementById('mobile-backdrop');
+            if (sidebar) sidebar.classList.add('mobile-open');
+            if (backdrop) backdrop.classList.add('active');
+        }
+
+        function closeMobileMenu() {
+            const sidebar = document.getElementById('sidebar');
+            const backdrop = document.getElementById('mobile-backdrop');
+            if (sidebar) sidebar.classList.remove('mobile-open');
+            if (backdrop) backdrop.classList.remove('active');
+        }
+
+        // Setup mobile menu event listeners  
+        document.addEventListener('DOMContentLoaded', () => {
+            const backdrop = document.getElementById('mobile-backdrop');
+            const menuToggle = document.getElementById('menu-toggle');
+
+            if (backdrop) {
+                backdrop.addEventListener('click', closeMobileMenu);
+            }
+
+            if (menuToggle) {
+                menuToggle.addEventListener('click', toggleMenu);
+            }
+        });
     </script>
 </body>
 
