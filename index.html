@@ -1,0 +1,1849 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="msapplication-tap-highlight" content="no">
+    <title>Shafey PM - Team & Task Manager</title>
+    <style>
+        :root {
+            --bg-body: #0f172a;
+            --bg-sidebar: #1e293b;
+            --bg-card: #1e293b;
+            --bg-hover: #334155;
+            --bg-button: #334155;
+            --text-primary: #f8fafc;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+            --primary: #818cf8;
+            --primary-hover: #6366f1;
+            --success: #34d399;
+            --warning: #fbbf24;
+            --danger: #f87171;
+            --space-xs: 0.25rem;
+            --space-sm: 0.5rem;
+            --space-md: 1rem;
+            --space-lg: 1.5rem;
+            --space-xl: 2rem;
+            --border-color: #475569;
+            --radius-sm: 0.375rem;
+            --radius-md: 0.5rem;
+            --radius-lg: 0.75rem;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.15);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.2);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.2);
+            --transition-fast: 150ms ease;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-primary);
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+            line-height: 1.5;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            font-weight: 600;
+            line-height: 1.25;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        button {
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-family: inherit;
+        }
+
+        button:focus,
+        input:focus,
+        select:focus {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
+        }
+
+        #app {
+            display: flex;
+            width: 100%;
+            height: 100%;
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 60px;
+                overflow: hidden;
+            }
+            
+            .sidebar .brand span,
+            .sidebar .nav-item span:not(:first-child) {
+                display: none;
+            }
+            
+            .sidebar .brand {
+                justify-content: center;
+                padding: var(--space-sm);
+            }
+            
+            .sidebar .nav-item {
+                justify-content: center;
+                padding: var(--space-md);
+            }
+            
+            .sidebar .nav-item span:first-child {
+                margin: 0;
+            }
+        }
+
+        .sidebar {
+            width: 260px;
+            background-color: var(--bg-sidebar);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            padding: var(--space-md);
+            flex-shrink: 0;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .brand {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: var(--space-xl);
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            padding: var(--space-sm) var(--space-md);
+            border-radius: var(--radius-md);
+            transition: background-color var(--transition-fast);
+        }
+
+        .brand:hover {
+            background-color: var(--bg-hover);
+        }
+
+        .nav-menu {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-xs);
+            flex: 1;
+        }
+
+        .nav-item {
+            padding: var(--space-sm) var(--space-md);
+            border-radius: var(--radius-md);
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+            transition: all var(--transition-fast);
+            margin-bottom: var(--space-xs);
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            background-color: var(--bg-hover);
+            color: var(--text-primary);
+        }
+
+        .nav-item:hover {
+            transform: translateX(2px);
+        }
+
+        .nav-item.active {
+            background-color: rgba(99, 102, 241, 0.1);
+            color: var(--primary);
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .header {
+            height: 64px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 var(--space-xl);
+            background-color: var(--bg-body);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .page-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+        }
+
+        .content-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: var(--space-xl);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-md);
+            font-weight: 500;
+            transition: all var(--transition-fast);
+            gap: var(--space-sm);
+            background-color: var(--bg-button);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn:hover {
+            background-color: var(--bg-hover);
+            border-color: var(--primary);
+            transform: translateY(-1px);
+        }
+
+        .card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: var(--space-lg);
+            box-shadow: var(--shadow-md);
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity var(--transition-fast);
+        }
+
+        .modal-overlay.open {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .modal {
+            background-color: var(--bg-card);
+            padding: var(--space-xl);
+            border-radius: var(--radius-lg);
+            width: 100%;
+            max-width: 500px;
+            box-shadow: var(--shadow-lg);
+            transform: translateY(20px);
+            transition: transform var(--transition-fast);
+            border: 1px solid var(--border-color);
+        }
+
+        .modal-overlay.open .modal {
+            transform: translateY(0);
+        }
+
+        .form-group {
+            margin-bottom: var(--space-md);
+        }
+
+        .form-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: var(--space-xs);
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .form-input,
+        .form-select {
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-card);
+            color: var(--text-primary);
+            font-family: inherit;
+        }
+
+        .form-input:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: var(--space-md);
+            margin-top: var(--space-xl);
+        }
+
+        .kanban-board {
+            display: flex;
+            gap: var(--space-lg);
+            height: calc(100vh - 140px);
+            overflow-x: auto;
+            padding-bottom: var(--space-md);
+        }
+
+        .kanban-column {
+            flex: 0 0 300px;
+            background-color: var(--bg-sidebar);
+            border-radius: var(--radius-lg);
+            display: flex;
+            flex-direction: column;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-md);
+        }
+
+        .column-header {
+            padding: var(--space-md);
+            border-bottom: 1px solid var(--border-color);
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .column-body {
+            padding: var(--space-md);
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-md);
+        }
+
+        .task-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: var(--space-md);
+            border-radius: var(--radius-md);
+            cursor: grab;
+            box-shadow: var(--shadow-sm);
+            transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+            margin-bottom: var(--space-sm);
+            animation: fadeInUp 0.3s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .task-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--primary);
+        }
+
+        .task-card.dragging {
+            opacity: 0.7;
+            transform: rotate(2deg);
+            cursor: grabbing;
+        }
+
+        .kanban-column.drag-over {
+            background-color: var(--bg-hover);
+            border-style: dashed;
+        }
+
+        .task-tag {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            background-color: rgba(129, 140, 248, 0.15);
+            color: var(--primary);
+            margin-top: var(--space-sm);
+            border: 1px solid rgba(129, 140, 248, 0.3);
+            transition: all var(--transition-fast);
+        }
+
+        .task-tag:hover {
+            background-color: rgba(129, 140, 248, 0.25);
+            border-color: rgba(129, 140, 248, 0.5);
+            transform: translateY(-1px);
+        }
+
+        .flex {
+            display: flex;
+        }
+
+        .items-center {
+            align-items: center;
+        }
+
+        .items-start {
+            align-items: flex-start;
+        }
+
+        .justify-between {
+            justify-content: space-between;
+        }
+
+        .gap-2 {
+            gap: 0.5rem;
+        }
+
+        .text-sm {
+            font-size: 0.875rem;
+        }
+
+        .text-muted {
+            color: var(--text-muted);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <aside class="sidebar" id="sidebar">
+            <div class="brand">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+                </svg>
+                <span>Shafey PM</span>
+            </div>
+            <nav class="nav-menu">
+                <a href="#" class="nav-item" data-view="dashboard"><span>Dashboard</span></a>
+                <a href="#" class="nav-item active" data-view="tasks"><span>Tasks</span></a>
+                <a href="#" class="nav-item" data-view="claims"><span>Claims</span></a>
+                <a href="#" class="nav-item" data-view="projects"><span>Projects</span></a>
+                <a href="#" class="nav-item" data-view="team"><span>Team</span></a>
+            </nav>
+        </aside>
+        <main class="main-content">
+            <header class="header">
+                <button id="menu-toggle" class="btn" style="display: none; margin-right: var(--space-md);">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
+                <h1 class="page-title" id="page-title">Tasks</h1>
+            </header>
+            <div class="content-area" id="content-area">
+                <!-- Tasks content will be loaded here -->
+            </div>
+        </main>
+    </div>
+    <div class="modal-overlay" id="team-modal">
+        <div class="modal">
+            <h2 id="team-modal-title">Add Team Member</h2>
+            <form id="team-form" style="margin-top: var(--space-lg);">
+                <input type="hidden" name="id" id="team-id">
+                <div class="form-group">
+                    <label class="form-label">Name</label>
+                    <input type="text" name="name" id="team-name" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Role</label>
+                    <input type="text" name="role" id="team-role" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" name="email" id="team-email" class="form-input" required>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn" onclick="closeModal('team-modal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="modal-overlay" id="task-modal">
+        <div class="modal">
+            <h2 id="task-modal-title">Create New Task</h2>
+            <form id="task-form" style="margin-top: var(--space-lg);">
+                <input type="hidden" name="id" id="task-id">
+                <div class="form-group">
+                    <label class="form-label">Name</label>
+                    <input type="text" name="title" id="task-title" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <input type="text" name="description" id="task-description" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Priority</label>
+                    <select name="priority" id="task-priority" class="form-select">
+                        <option value="Low">Low</option>
+                        <option value="Medium" selected>Medium</option>
+                        <option value="High">High</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Due Month</label>
+                    <select name="month" id="task-month" class="form-select">
+                        <option value="">Select a month</option>
+                        <option value="January">January</option>
+                        <option value="February">February</option>
+                        <option value="March">March</option>
+                        <option value="April">April</option>
+                        <option value="May">May</option>
+                        <option value="June">June</option>
+                        <option value="July">July</option>
+                        <option value="August">August</option>
+                        <option value="September">September</option>
+                        <option value="October">October</option>
+                        <option value="November">November</option>
+                        <option value="December">December</option>
+                    </select>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn" onclick="closeModal('task-modal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Task</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="modal-overlay" id="project-modal">
+        <div class="modal">
+            <h2 id="project-modal-title">Create New Project</h2>
+            <form id="project-form" style="margin-top: var(--space-lg);">
+                <input type="hidden" name="id" id="project-id">
+                <div class="form-group">
+                    <label class="form-label">Project Name</label>
+                    <input type="text" name="name" id="project-name" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <input type="text" name="description" id="project-description" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Status</label>
+                    <select name="status" id="project-status" class="form-select">
+                        <option value="Active" selected>Active</option>
+                        <option value="On Hold">On Hold</option>
+                        <option value="Completed">Completed</option>
+                    </select>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn" onclick="closeModal('project-modal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Project</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <div class="modal-overlay" id="claim-modal">
+        <div class="modal">
+            <h2 id="claim-modal-title">Create New Claim</h2>
+            <form id="claim-form" style="margin-top: var(--space-lg);">
+                <input type="hidden" name="id" id="claim-id">
+                <div class="form-group">
+                    <label class="form-label">Name</label>
+                    <input type="text" name="name" id="claim-name" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Cost</label>
+                    <input type="number" name="cost" id="claim-cost" class="form-input" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Date</label>
+                    <input type="date" name="date" id="claim-date" class="form-input" required>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn" onclick="closeModal('claim-modal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Claim</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+
+    
+    <script>
+        function generateUUID() {
+            return 'xxxxxxxxxxxx4xxxyxxxxxxxxxxxxxxx'.replace(/[xy]/g, c => {
+                const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+                return v.toString(16);
+            });
+        }
+        class DB {
+            constructor() {
+                this.dbName = 'ShafeyPM_DB';
+                this.version = 4;
+                this.db = null;
+            }
+            async init() {
+                return new Promise((resolve, reject) => {
+                    const request = indexedDB.open(this.dbName, this.version);
+                    request.onerror = (e) => {
+                        console.error("DB error:", e.target.error);
+                        console.error("Error event:", e);
+                        reject(e.target.error);
+                    };
+                    request.onsuccess = (e) => {
+                        this.db = e.target.result;
+                        console.log("DB opened successfully. Version:", this.db.version);
+                        console.log("Available stores:", Array.from(this.db.objectStoreNames).join(', '));
+                        resolve(this.db);
+                    };
+                    request.onupgradeneeded = (e) => {
+                        const db = e.target.result;
+                        console.log("Upgrading DB from version", e.oldVersion, "to", e.newVersion);
+                        console.log("Existing stores:", Array.from(db.objectStoreNames).join(', '));
+                        
+                        // Handle version upgrades properly
+                        if (e.oldVersion < 1) {
+                            // Version 1: Initial setup
+                            db.createObjectStore('tasks', { keyPath: 'id' });
+                            db.createObjectStore('team', { keyPath: 'id' });
+                        }
+                        
+                        if (e.oldVersion < 2) {
+                            // Version 2: Add projects store
+                            db.createObjectStore('projects', { keyPath: 'id' });
+                        }
+                        
+                        if (e.oldVersion < 4) {
+                            // Version 4: Add claims store
+                            db.createObjectStore('claims', { keyPath: 'id' });
+                        }
+                        
+                        
+                        
+                        // Ensure all stores exist (fallback for any missing stores)
+                        if (!db.objectStoreNames.contains('tasks')) {
+                            console.log("Creating tasks store");
+                            db.createObjectStore('tasks', { keyPath: 'id' });
+                        }
+                        if (!db.objectStoreNames.contains('team')) {
+                            console.log("Creating team store");
+                            db.createObjectStore('team', { keyPath: 'id' });
+                        }
+                        if (!db.objectStoreNames.contains('projects')) {
+                            console.log("Creating projects store");
+                            db.createObjectStore('projects', { keyPath: 'id' });
+                        }
+                        if (!db.objectStoreNames.contains('claims')) {
+                            console.log("Creating claims store");
+                            db.createObjectStore('claims', { keyPath: 'id' });
+                        }
+
+                        
+                        console.log("Stores after upgrade:", Array.from(db.objectStoreNames).join(', '));
+                    };
+                });
+            }
+            async getAll(storeName) {
+                console.log(`Getting all items from ${storeName}`);
+                // Check if store exists
+                if (!this.db.objectStoreNames.contains(storeName)) {
+                    console.error(`Store ${storeName} does not exist. Available stores:`, Array.from(this.db.objectStoreNames).join(', '));
+                    return Promise.reject(new Error(`Object store '${storeName}' not found`));
+                }
+                
+                return new Promise((resolve, reject) => {
+                    const tx = this.db.transaction([storeName], "readonly");
+                    const store = tx.objectStore(storeName);
+                    const request = store.getAll();
+                    request.onsuccess = () => {
+                        console.log(`Successfully retrieved ${request.result.length} items from ${storeName}`);
+                        resolve(request.result);
+                    };
+                    request.onerror = () => {
+                        console.error(`Error getting items from ${storeName}:`, request.error);
+                        reject(request.error);
+                    };
+                });
+            }
+            async add(storeName, item) {
+                console.log(`Adding item to ${storeName}:`, item);
+                // Check if store exists
+                if (!this.db.objectStoreNames.contains(storeName)) {
+                    console.error(`Store ${storeName} does not exist. Available stores:`, Array.from(this.db.objectStoreNames).join(', '));
+                    return Promise.reject(new Error(`Object store '${storeName}' not found`));
+                }
+                
+                return new Promise((resolve, reject) => {
+                    const tx = this.db.transaction([storeName], "readwrite");
+                    const store = tx.objectStore(storeName);
+                    const request = store.add(item);
+                    request.onsuccess = () => {
+                        console.log(`Successfully added item to ${storeName}`);
+                        resolve(request.result);
+                    };
+                    request.onerror = () => {
+                        console.error(`Error adding item to ${storeName}:`, request.error);
+                        reject(request.error);
+                    };
+                });
+            }
+            async update(storeName, item) {
+                console.log(`Updating item in ${storeName}:`, item);
+                // Check if store exists
+                if (!this.db.objectStoreNames.contains(storeName)) {
+                    console.error(`Store ${storeName} does not exist. Available stores:`, Array.from(this.db.objectStoreNames).join(', '));
+                    return Promise.reject(new Error(`Object store '${storeName}' not found`));
+                }
+                
+                return new Promise((resolve, reject) => {
+                    const tx = this.db.transaction([storeName], "readwrite");
+                    const store = tx.objectStore(storeName);
+                    const request = store.put(item);
+                    request.onsuccess = () => {
+                        console.log(`Successfully updated item in ${storeName}`);
+                        resolve(request.result);
+                    };
+                    request.onerror = () => {
+                        console.error(`Error updating item in ${storeName}:`, request.error);
+                        reject(request.error);
+                    };
+                });
+            }
+            async delete(storeName, id) {
+                console.log(`Deleting item from ${storeName} with id:`, id);
+                // Check if store exists
+                if (!this.db.objectStoreNames.contains(storeName)) {
+                    console.error(`Store ${storeName} does not exist. Available stores:`, Array.from(this.db.objectStoreNames).join(', '));
+                    return Promise.reject(new Error(`Object store '${storeName}' not found`));
+                }
+                
+                return new Promise((resolve, reject) => {
+                    const tx = this.db.transaction([storeName], "readwrite");
+                    const store = tx.objectStore(storeName);
+                    const request = store.delete(id);
+                    request.onsuccess = () => {
+                        console.log(`Successfully deleted item from ${storeName}`);
+                        resolve(request.result);
+                    };
+                    request.onerror = () => {
+                        console.error(`Error deleting item from ${storeName}:`, request.error);
+                        reject(request.error);
+                    };
+                });
+            }
+        }
+        const db = new DB();
+        const State = {
+            currentView: 'dashboard',
+            data: { tasks: [], projects: [], team: [], claims: [] }
+        };
+        
+        // Initialize task tab state
+        window.currentTaskTab = 'my';
+        const DOM = {
+            contentArea: document.getElementById('content-area'),
+            pageTitle: document.getElementById('page-title'),
+            navItems: document.querySelectorAll('.nav-item')
+        };
+        window.openModal = (id) => document.getElementById(id).classList.add('open');
+        window.closeModal = (id) => document.getElementById(id).classList.remove('open');
+        window.openTeamModal = () => {
+            document.getElementById('team-form').reset();
+            document.getElementById('team-id').value = '';
+            document.getElementById('team-modal-title').textContent = 'Add Team Member';
+            openModal('team-modal');
+        };
+        window.editTeamMember = (id) => {
+            const member = State.data.team.find(m => m.id === id);
+            if (member) {
+                document.getElementById('team-id').value = member.id;
+                document.getElementById('team-name').value = member.name;
+                document.getElementById('team-role').value = member.role;
+                document.getElementById('team-email').value = member.email;
+                document.getElementById('team-modal-title').textContent = 'Edit Team Member';
+                openModal('team-modal');
+            }
+        };
+        window.openTaskModal = () => {
+            document.getElementById('task-form').reset();
+            document.getElementById('task-id').value = '';
+            document.getElementById('task-modal-title').textContent = 'Create New Task';
+            openModal('task-modal');
+        };
+        
+        // Custom modal for my tasks
+        window.openMyTaskModal = (taskType) => {
+            document.getElementById('task-form').reset();
+            document.getElementById('task-id').value = '';
+            document.getElementById('task-modal-title').textContent = taskType === 'self' ? 'Create Self Task' : 'Create Lead Task';
+            
+            // Set task type in a hidden field
+            let taskTypeField = document.getElementById('task-type');
+            if (!taskTypeField) {
+                taskTypeField = document.createElement('input');
+                taskTypeField.type = 'hidden';
+                taskTypeField.id = 'task-type';
+                taskTypeField.name = 'task-type'; // Ensure FormData can pick this up
+                document.getElementById('task-form').appendChild(taskTypeField);
+            }
+            taskTypeField.value = taskType;
+            
+            openModal('task-modal');
+        };
+        
+        // Custom modal for team tasks
+        window.openTeamTaskModal = (memberId, memberName) => {
+            document.getElementById('task-form').reset();
+            document.getElementById('task-id').value = '';
+            document.getElementById('task-modal-title').textContent = `Create Task for ${memberName}`;
+            
+            // Set assigned member in a hidden field
+            let assignedToField = document.getElementById('assigned-to');
+            if (!assignedToField) {
+                assignedToField = document.createElement('input');
+                assignedToField.type = 'hidden';
+                assignedToField.id = 'assigned-to';
+                assignedToField.name = 'assigned-to'; // Ensure FormData can pick this up
+                document.getElementById('task-form').appendChild(assignedToField);
+            }
+            assignedToField.value = memberId;
+            
+            openModal('task-modal');
+        };
+        
+        window.markTaskComplete = async (id) => {
+            const task = State.data.tasks.find(t => t.id === id);
+            if (task) {
+                task.status = 'done';
+                await db.update('tasks', task);
+                State.data.tasks = State.data.tasks.map(t => t.id === id ? task : t);
+                renderTaskBoard();
+            }
+        };
+        window.editTask = (id) => {
+            const task = State.data.tasks.find(t => t.id === id);
+            if (task) {
+                document.getElementById('task-id').value = task.id;
+                document.getElementById('task-title').value = task.title;
+                document.getElementById('task-description').value = task.description || '';
+                // Project field removed as per requirements
+                document.getElementById('task-priority').value = task.priority || 'Medium';
+                // DueDate field removed as per requirements
+                // AssignedTo field removed as per requirements
+                document.getElementById('task-month').value = task.month || '';
+                document.getElementById('task-modal-title').textContent = 'Edit Task';
+                openModal('task-modal');
+            }
+        };
+        
+        window.editMyTask = (id) => {
+            const task = State.data.tasks.find(t => t.id === id);
+            if (task) {
+                document.getElementById('task-id').value = task.id;
+                document.getElementById('task-title').value = task.title;
+                document.getElementById('task-description').value = task.description || '';
+                // Project field removed as per requirements
+                document.getElementById('task-priority').value = task.priority || 'Medium';
+                // DueDate field removed as per requirements
+                // AssignedTo field removed as per requirements
+                document.getElementById('task-month').value = task.month || '';
+                document.getElementById('task-modal-title').textContent = 'Edit Task';
+                openModal('task-modal');
+            }
+        };
+        window.openProjectModal = () => {
+            document.getElementById('project-form').reset();
+            document.getElementById('project-id').value = '';
+            document.getElementById('project-modal-title').textContent = 'Create New Project';
+            openModal('project-modal');
+        };
+        window.editProject = (id) => {
+            const project = State.data.projects.find(p => p.id === id);
+            if (project) {
+                document.getElementById('project-id').value = project.id;
+                document.getElementById('project-name').value = project.name;
+                document.getElementById('project-description').value = project.description || '';
+                document.getElementById('project-status').value = project.status || 'Active';
+                document.getElementById('project-modal-title').textContent = 'Edit Project';
+                openModal('project-modal');
+            }
+        };
+        window.deleteTask = async (id) => {
+            if (confirm('Delete this task?')) {
+                await db.delete('tasks', id);
+                State.data.tasks = State.data.tasks.filter(t => t.id !== id);
+                renderTaskBoard();
+            }
+        };
+        window.deleteTeamMember = async (id) => {
+            if (confirm('Delete this member?')) {
+                await db.delete('team', id);
+                State.data.team = State.data.team.filter(m => m.id !== id);
+                renderTeam();
+            }
+        };
+        window.deleteProject = async (id) => {
+            if (confirm('Delete this project?')) {
+                await db.delete('projects', id);
+                State.data.projects = State.data.projects.filter(p => p.id !== id);
+                renderProjects();
+            }
+        };
+        
+        // Claim functions
+        window.openClaimModal = () => {
+            document.getElementById('claim-form').reset();
+            document.getElementById('claim-id').value = '';
+            document.getElementById('claim-modal-title').textContent = 'Create New Claim';
+            openModal('claim-modal');
+        };
+        
+        window.editClaim = (id) => {
+            const claim = State.data.claims.find(c => c.id === id);
+            if (claim) {
+                document.getElementById('claim-id').value = claim.id;
+                document.getElementById('claim-name').value = claim.name;
+                document.getElementById('claim-cost').value = claim.cost;
+                document.getElementById('claim-date').value = claim.date;
+                document.getElementById('claim-modal-title').textContent = 'Edit Claim';
+                openModal('claim-modal');
+            }
+        };
+        
+        window.deleteClaim = async (id) => {
+            if (confirm('Delete this claim?')) {
+                await db.delete('claims', id);
+                State.data.claims = State.data.claims.filter(c => c.id !== id);
+                renderClaims();
+            }
+        };
+        
+        window.markClaimComplete = async (id) => {
+            const claim = State.data.claims.find(c => c.id === id);
+            if (claim) {
+                claim.status = 'done';
+                await db.update('claims', claim);
+                State.data.claims = State.data.claims.map(c => c.id === id ? claim : c);
+                renderClaims();
+            }
+        };
+        
+        // Reminder functions
+        window.openReminderModal = () => {
+            document.getElementById('reminder-form').reset();
+            document.getElementById('reminder-id').value = '';
+            document.getElementById('reminder-modal-title').textContent = 'Create New Reminder';
+            openModal('reminder-modal');
+        };
+        
+        window.editReminder = (id) => {
+            const reminder = State.data.reminders.find(r => r.id === id);
+            if (reminder) {
+                document.getElementById('reminder-id').value = reminder.id;
+                document.getElementById('reminder-name').value = reminder.name;
+                document.getElementById('reminder-description').value = reminder.description || '';
+                document.getElementById('reminder-due-month').value = reminder.dueMonth || '';
+                document.getElementById('reminder-due-date').value = reminder.dueDate || '';
+                document.getElementById('reminder-modal-title').textContent = 'Edit Reminder';
+                openModal('reminder-modal');
+            }
+        };
+        
+        window.deleteReminder = async (id) => {
+            if (confirm('Delete this reminder?')) {
+                await db.delete('reminders', id);
+                State.data.reminders = State.data.reminders.filter(r => r.id !== id);
+                renderReminders();
+            }
+        };
+        
+        
+        // populateTeamMembersDropdown function removed as per requirements
+        function getTeamMemberNameById(id) {
+            if (!id) return 'Unassigned';
+            const member = State.data.team.find(m => m.id === id);
+            return member ? member.name : 'Unknown';
+        }
+        function switchTaskTab(tab) {
+            // Update global state
+            window.currentTaskTab = tab;
+            
+            // Update UI to show active tab
+            document.getElementById('tab-my').style.backgroundColor = '';
+            document.getElementById('tab-my').style.color = '';
+            document.getElementById('tab-my').style.borderColor = '';
+            document.getElementById('tab-my').style.fontWeight = 'normal';
+            document.getElementById('tab-team').style.backgroundColor = '';
+            document.getElementById('tab-team').style.color = '';
+            document.getElementById('tab-team').style.borderColor = '';
+            document.getElementById('tab-team').style.fontWeight = 'normal';
+            
+            if (tab === 'my') {
+                document.getElementById('tab-my').style.backgroundColor = 'var(--primary)';
+                document.getElementById('tab-my').style.color = 'white';
+                document.getElementById('tab-my').style.borderColor = 'var(--primary)';
+                document.getElementById('tab-my').style.fontWeight = 'bold';
+            } else if (tab === 'team') {
+                document.getElementById('tab-team').style.backgroundColor = 'var(--primary)';
+                document.getElementById('tab-team').style.color = 'white';
+                document.getElementById('tab-team').style.borderColor = 'var(--primary)';
+                document.getElementById('tab-team').style.fontWeight = 'bold';
+            }
+            
+            // Re-render the task board
+            renderTaskBoard();
+        }
+        function populateTeamFilterDropdown() {
+            const select = document.getElementById('team-member-filter');
+            // Save current selection
+            const currentValue = select.value;
+            
+            // Clear existing options except the first one
+            select.innerHTML = '<option value="">All Team Members</option>';
+            
+            // Add team members
+            State.data.team.forEach(member => {
+                const option = document.createElement('option');
+                option.value = member.id;
+                option.textContent = member.name;
+                select.appendChild(option);
+            });
+            
+            // Restore selection
+            select.value = currentValue;
+        }
+        function filterTeamTasks() {
+            // This will trigger a re-render with the selected filter
+            renderTaskBoard();
+        }
+        window.allowDrop = (ev) => ev.preventDefault();
+        window.drag = (ev, id) => {
+            ev.dataTransfer.setData("text/plain", id);
+            ev.target.classList.add('dragging');
+        };
+        window.dragEnter = (ev) => {
+            if (ev.target.classList.contains('kanban-column')) ev.target.classList.add('drag-over');
+        };
+        window.dragLeave = (ev) => {
+            if (ev.target.classList.contains('kanban-column')) ev.target.classList.remove('drag-over');
+        };
+        window.drop = async (ev, status) => {
+            ev.preventDefault();
+            const id = ev.dataTransfer.getData("text/plain");
+            const task = State.data.tasks.find(t => t.id === id);
+            document.querySelectorAll('.kanban-column').forEach(col => col.classList.remove('drag-over'));
+            if (task && task.status !== status) {
+                task.status = status;
+                await db.update('tasks', task);
+                renderTaskBoard();
+            }
+        };
+        
+        // Drag and drop functions for team member tasks
+        window.dragTeamTask = (ev, id) => {
+            ev.dataTransfer.setData("text/plain", id);
+            ev.target.classList.add('dragging');
+        };
+        
+        window.dropTeamTask = async (ev, status) => {
+            ev.preventDefault();
+            const id = ev.dataTransfer.getData("text/plain");
+            const task = State.data.tasks.find(t => t.id === id);
+            document.querySelectorAll('.kanban-column').forEach(col => col.classList.remove('drag-over'));
+            if (task && task.status !== status) {
+                task.status = status;
+                await db.update('tasks', task);
+                renderTaskBoard(); // This will re-render the entire board including team sections
+            }
+        };
+        window.navigateTo = (view) => {
+            State.currentView = view;
+            DOM.navItems.forEach(item => {
+                if (item.dataset.view === view) item.classList.add('active');
+                else item.classList.remove('active');
+            });
+            DOM.pageTitle.textContent = view.charAt(0).toUpperCase() + view.slice(1);
+            renderView(view);
+            
+            // Close sidebar on mobile after navigation
+            if (window.innerWidth <= 768) {
+                document.getElementById('sidebar').style.width = '60px';
+            }
+        };
+        
+        // Mobile menu toggle
+        window.toggleMenu = () => {
+            const sidebar = document.getElementById('sidebar');
+            const computedWidth = parseInt(getComputedStyle(sidebar).width);
+            
+            if (computedWidth <= 70) {
+                sidebar.style.width = '260px';
+            } else {
+                sidebar.style.width = '60px';
+            }
+        };
+        function renderView(view) {
+            DOM.contentArea.innerHTML = '';
+            if (view === 'dashboard') renderDashboard();
+            else if (view === 'team') renderTeam();
+            else if (view === 'tasks') renderTaskBoard();
+            else if (view === 'claims') renderClaims();
+            else if (view === 'projects') renderProjects();
+            else DOM.contentArea.innerHTML = `<div class="card"><h2>${view.charAt(0).toUpperCase() + view.slice(1)}</h2><p>Under construction.</p></div>`;
+        }
+        function renderDashboard() {
+            // Calculate My Tasks (self tasks assigned to 'self')
+            const selfTasks = State.data.tasks.filter(t => t.assignedTo === 'self');
+            const myTaskCount = selfTasks.length;
+            
+            // Calculate Team Tasks (only tasks assigned to actual team members, excluding 'self' tasks)
+            const teamIds = State.data.team.map(member => member.id);
+            const teamTasks = State.data.tasks.filter(t => t.assignedTo && t.assignedTo !== '' && t.assignedTo !== 'self' && teamIds.includes(t.assignedTo));
+            const teamTaskCount = teamTasks.length;
+            
+            // Calculate Pending Claims (not completed claims)
+            const pendingClaims = State.data.claims.filter(c => c.status !== 'done');
+            const pendingClaimCount = pendingClaims.length;
+            
+            const projectCount = State.data.projects.length;
+            const teamCount = State.data.team.length;
+            const today = new Date(); today.setHours(0, 0, 0, 0);
+            const nextWeek = new Date(today); nextWeek.setDate(today.getDate() + 7);
+            // DueDate filtering removed as per requirements
+            const upcomingTasks = [];
+            let upcomingHtml = '';
+            if (upcomingTasks.length === 0) {
+                upcomingHtml = '<p class="text-muted">No upcoming deadlines this week.</p>';
+            } else {
+                upcomingTasks.forEach(t => {
+                    const priorityColor = t.priority === 'High' ? '#f87171' : t.priority === 'Medium' ? '#fbbf24' : '#34d399';
+                    upcomingHtml += `<div style="display: flex; justify-content: space-between; align-items: center; padding: var(--space-sm) 0; border-bottom: 1px solid var(--border-color);"><div><div style="font-weight: 500;">${t.title}</div><div class="text-sm text-muted">${t.month || 'No month'}</div></div><span style="padding: 2px 8px; border-radius: 12px; font-size: 0.75rem; background-color: ${priorityColor}; color: white;">${t.priority || 'Medium'}</span></div>`;
+                });
+            }
+            DOM.contentArea.innerHTML = `<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: var(--space-lg);"><div class="card"><h3>My Tasks</h3><div style="font-size: 2rem; font-weight: 700; color: var(--primary); margin-top: var(--space-sm);">${myTaskCount}</div></div><div class="card"><h3>Team Tasks</h3><div style="font-size: 2rem; font-weight: 700; color: var(--success); margin-top: var(--space-sm);">${teamTaskCount}</div></div><div class="card"><h3>Active Projects</h3><div style="font-size: 2rem; font-weight: 700; color: var(--warning); margin-top: var(--space-sm);">${projectCount}</div></div><div class="card"><h3>Pending Claims</h3><div style="font-size: 2rem; font-weight: 700; color: var(--danger); margin-top: var(--space-sm);">${pendingClaimCount}</div></div></div><div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: var(--space-lg); margin-top: var(--space-lg);"><div class="card"><h3>Upcoming Deadlines (Next 7 Days)</h3><div style="margin-top: var(--space-md);">${upcomingHtml}</div></div><div class="card"><h3>Team Members</h3><div style="font-size: 2rem; font-weight: 700; color: var(--warning); margin-top: var(--space-sm);">${teamCount}</div></div></div>`;
+        }
+        function renderTeam() {
+            const team = State.data.team;
+            let html = `<div class="flex justify-between items-center" style="margin-bottom: var(--space-lg);"><h2>Team Members</h2><button class="btn btn-primary" onclick="openTeamModal()">+ Add Member</button></div><div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: var(--space-md);">`;
+            if (team.length === 0) {
+                html += `<p class="text-muted">No team members found.</p>`;
+            } else {
+                team.forEach(member => {
+                    html += `<div class="card"><div class="flex justify-between items-center"><h3>${member.name}</h3><div class="flex gap-2"><button class="text-muted" onclick="editTeamMember('${member.id}')" style="font-size: 0.875rem;">Edit</button><button class="text-muted" onclick="deleteTeamMember('${member.id}')" style="font-size: 0.875rem; color: var(--danger);">Delete</button></div></div><p class="text-muted">${member.role}</p><p class="text-sm" style="margin-top: var(--space-sm);">${member.email}</p></div>`;
+                });
+            }
+            html += `</div>`;
+            DOM.contentArea.innerHTML = html;
+        }
+        function renderTaskBoard() {
+            const tasks = State.data.tasks;
+            
+            // Tab navigation - only My Tasks and Team Tasks
+            let html = `
+                <div class="flex justify-between items-center" style="margin-bottom: var(--space-lg);">
+                    <h2>Task Board</h2>
+                </div>
+                <div style="margin-bottom: var(--space-lg);">
+                    <div class="flex gap-2" style="border-bottom: 1px solid var(--border-color); padding-bottom: var(--space-sm);">
+                        <button class="btn" onclick="switchTaskTab('my')" id="tab-my">My Tasks</button>
+                        <button class="btn" onclick="switchTaskTab('team')" id="tab-team">Team Tasks</button>
+                    </div>
+                </div>`;
+            
+            // Apply active styles after element creation
+            setTimeout(() => {
+                const myTab = document.getElementById('tab-my');
+                const teamTab = document.getElementById('tab-team');
+                
+                if (window.currentTaskTab === 'my') {
+                    myTab.style.backgroundColor = 'var(--primary)';
+                    myTab.style.color = 'white';
+                    myTab.style.fontWeight = 'bold';
+                } else {
+                    myTab.style.backgroundColor = '';
+                    myTab.style.color = '';
+                    myTab.style.fontWeight = 'normal';
+                }
+                
+                if (window.currentTaskTab === 'team') {
+                    teamTab.style.backgroundColor = 'var(--primary)';
+                    teamTab.style.color = 'white';
+                    teamTab.style.fontWeight = 'bold';
+                } else {
+                    teamTab.style.backgroundColor = '';
+                    teamTab.style.color = '';
+                    teamTab.style.fontWeight = 'normal';
+                }
+            }, 0);
+            
+            // Render based on current tab
+            if (window.currentTaskTab === 'my') {
+                html += renderMyTasksView();
+            } else if (window.currentTaskTab === 'team') {
+                html += renderTeamTasksView();
+            }
+            
+            DOM.contentArea.innerHTML = html;
+        }
+        
+        // Store section states in localStorage
+        function getSectionState(sectionId) {
+            const state = localStorage.getItem(`section_${sectionId}_expanded`);
+            return state === 'true'; // defaults to false if not found
+        }
+        
+        function setSectionState(sectionId, isExpanded) {
+            localStorage.setItem(`section_${sectionId}_expanded`, isExpanded);
+        }
+        
+        function renderMyTasksView() {
+            // Filter tasks for self tasks (tasks assigned to 'self')
+            const selfTasks = State.data.tasks.filter(t => t.assignedTo === 'self');
+            
+            // Filter lead tasks (unassigned tasks)
+            const leadTasks = State.data.tasks.filter(t => !t.assignedTo || t.assignedTo === '');
+            
+            // Filter completed tasks for both sections
+            const completedSelfTasks = selfTasks.filter(t => t.status === 'done');
+            const activeSelfTasks = selfTasks.filter(t => t.status !== 'done');
+            
+            const completedLeadTasks = leadTasks.filter(t => t.status === 'done');
+            const activeLeadTasks = leadTasks.filter(t => t.status !== 'done');
+            
+            // Check section states
+            const isSelfExpanded = getSectionState('self');
+            const isLeadExpanded = getSectionState('lead');
+            const isSelfCompletedExpanded = getSectionState('self_completed');
+            const isLeadCompletedExpanded = getSectionState('lead_completed');
+            
+            let html = `
+                <div style="margin-bottom: var(--space-lg);">
+                    <!-- Self Tasks Section -->
+                    <div class="card" style="margin-bottom: var(--space-md);">
+                        <div class="flex justify-between items-center" style="cursor: pointer;" onclick="toggleSection('self')">
+                            <h3>Self Tasks (${activeSelfTasks.length} active, ${completedSelfTasks.length} completed)</h3>
+                            <span id="toggle-self">${isSelfExpanded ? '▲' : '▼'}</span>
+                        </div>
+                        <div id="section-self" class="${isSelfExpanded ? '' : 'hidden'}" style="margin-top: var(--space-md);">
+                            <button class="btn btn-primary" onclick="openMyTaskModal('self')" style="margin-bottom: var(--space-md);">+ Add Self Task</button>
+                            ${renderTaskList(activeSelfTasks, 'self-active')}
+                            
+                            <!-- Completed Self Tasks -->
+                            <div class="card" style="margin-top: var(--space-md); background-color: var(--bg-sidebar);">
+                                <div class="flex justify-between items-center" style="cursor: pointer;" onclick="toggleSection('self_completed')">
+                                    <h4>Completed Tasks (${completedSelfTasks.length})</h4>
+                                    <span id="toggle-self_completed">${isSelfCompletedExpanded ? '▲' : '▼'}</span>
+                                </div>
+                                <div id="section-self_completed" class="${isSelfCompletedExpanded ? '' : 'hidden'}" style="margin-top: var(--space-md);">
+                                    ${completedSelfTasks.length > 0 ? renderTaskList(completedSelfTasks, 'self-completed') : '<p class="text-muted">No completed tasks yet.</p>'}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Lead Tasks Section -->
+                    <div class="card" style="margin-bottom: var(--space-md);">
+                        <div class="flex justify-between items-center" style="cursor: pointer;" onclick="toggleSection('lead')">
+                            <h3>Lead Tasks (${activeLeadTasks.length} active, ${completedLeadTasks.length} completed)</h3>
+                            <span id="toggle-lead">${isLeadExpanded ? '▲' : '▼'}</span>
+                        </div>
+                        <div id="section-lead" class="${isLeadExpanded ? '' : 'hidden'}" style="margin-top: var(--space-md);">
+                            <button class="btn btn-primary" onclick="openMyTaskModal('lead')" style="margin-bottom: var(--space-md);">+ Add Lead Task</button>
+                            ${renderTaskList(activeLeadTasks, 'lead-active')}
+                            
+                            <!-- Completed Lead Tasks -->
+                            <div class="card" style="margin-top: var(--space-md); background-color: var(--bg-sidebar);">
+                                <div class="flex justify-between items-center" style="cursor: pointer;" onclick="toggleSection('lead_completed')">
+                                    <h4>Completed Tasks (${completedLeadTasks.length})</h4>
+                                    <span id="toggle-lead_completed">${isLeadCompletedExpanded ? '▲' : '▼'}</span>
+                                </div>
+                                <div id="section-lead_completed" class="${isLeadCompletedExpanded ? '' : 'hidden'}" style="margin-top: var(--space-md);">
+                                    ${completedLeadTasks.length > 0 ? renderTaskList(completedLeadTasks, 'lead-completed') : '<p class="text-muted">No completed tasks yet.</p>'}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+            
+            return html;
+        }
+        
+        function renderTaskList(tasks, containerType) {
+            if (tasks.length === 0) {
+                return '<p class="text-muted">No tasks found.</p>';
+            }
+            
+            let html = '<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: var(--space-md);">';
+            
+            tasks.forEach(task => {
+                const priorityColor = getPriorityColor(task.priority);
+                html += `
+                    <div class="card" style="position: relative;">
+                        <div class="flex justify-between items-start">
+                            <h4>${task.title}</h4>
+                            <div class="flex gap-2">
+                                <button onclick="editMyTask('${task.id}')" style="font-size: 0.75rem; color: var(--text-muted);">Edit</button>
+                                <button onclick="deleteTask('${task.id}')" style="font-size: 0.75rem; color: var(--danger);">Del</button>
+                            </div>
+                        </div>
+                        <p class="text-muted text-sm" style="margin-top: 4px;">${task.description || ''}</p>
+                        <div class="flex justify-between items-center" style="margin-top: var(--space-sm);">
+                            ${task.priority ? `<span class="task-tag">${task.priority}</span>` : ''}
+                            <div class="flex items-center gap-2">
+                                ${task.month ? `<span class="text-sm text-muted">${task.month}</span>` : ''}
+                                <span style="width: 8px; height: 8px; border-radius: 50%; background-color: ${priorityColor};" title="${task.priority || 'No Priority'}"></span>
+                            </div>
+                        </div>
+                        ${containerType.includes('active') ? 
+                            `<button class="btn" onclick="markTaskComplete('${task.id}')" style="margin-top: var(--space-md); width: 100%;">Mark Complete</button>` : 
+                            `<div style="margin-top: var(--space-md); width: 100%; text-align: center; padding: 0.5rem; background-color: var(--success); color: white; border-radius: var(--radius-md);">Completed</div>`}
+                    </div>`;
+            });
+            
+            html += '</div>';
+            return html;
+        }
+        
+        function getPriorityColor(priority) {
+            const priorityColors = { 'High': '#f87171', 'Medium': '#fbbf24', 'Low': '#34d399' };
+            return priorityColors[priority] || '#94a3b8';
+        }
+        
+        function toggleSection(sectionId) {
+            const section = document.getElementById(`section-${sectionId}`);
+            const toggle = document.getElementById(`toggle-${sectionId}`);
+            
+            if (section.classList.contains('hidden')) {
+                section.classList.remove('hidden');
+                toggle.textContent = '▲';
+                setSectionState(sectionId, true);
+            } else {
+                section.classList.add('hidden');
+                toggle.textContent = '▼';
+                setSectionState(sectionId, false);
+            }
+        }
+        
+
+        
+        function renderTeamTasksView() {
+            const tasks = State.data.tasks;
+            const team = State.data.team;
+            
+            let html = `<div style="margin-bottom: var(--space-lg);">
+                <button class="btn btn-primary" onclick="openTeamModal()" style="margin-bottom: var(--space-lg);">+ Create Team</button>
+                <div id="team-sections">`;
+            
+            // Group tasks by team member
+            const tasksByTeamMember = {};
+            tasks.forEach(task => {
+                if (task.assignedTo) {
+                    if (!tasksByTeamMember[task.assignedTo]) {
+                        tasksByTeamMember[task.assignedTo] = [];
+                    }
+                    tasksByTeamMember[task.assignedTo].push(task);
+                }
+            });
+            
+            // Sort team members by task count (descending) and then alphabetically
+            const sortedTeam = [...team].sort((a, b) => {
+                const aTasks = tasksByTeamMember[a.id] || [];
+                const bTasks = tasksByTeamMember[b.id] || [];
+                const aTaskCount = aTasks.length;
+                const bTaskCount = bTasks.length;
+                
+                // First sort by task count (descending)
+                if (aTaskCount !== bTaskCount) {
+                    return bTaskCount - aTaskCount;
+                }
+                
+                // If task counts are equal, sort alphabetically
+                return a.name.localeCompare(b.name);
+            });
+            
+            // Create a section for each team member
+            sortedTeam.forEach(member => {
+                const memberTasks = tasksByTeamMember[member.id] || [];
+                const completedMemberTasks = memberTasks.filter(t => t.status === 'done');
+                const activeMemberTasks = memberTasks.filter(t => t.status !== 'done');
+                
+                // Check section state
+                const isMemberExpanded = getSectionState(`team_${member.id}`);
+                
+                html += `
+                    <div class="card" style="margin-bottom: var(--space-md);">
+                        <div class="flex justify-between items-center" style="cursor: pointer;" onclick="toggleTeamSection('${member.id}')">
+                            <h3>${member.name} (${activeMemberTasks.length} active, ${completedMemberTasks.length} completed)</h3>
+                            <span id="team-toggle-${member.id}">${isMemberExpanded ? '▲' : '▼'}</span>
+                        </div>
+                        <div id="team-tasks-${member.id}" class="${isMemberExpanded ? '' : 'hidden'}" style="margin-top: var(--space-md);">
+                            <button class="btn btn-primary" onclick="openTeamTaskModal('${member.id}', '${member.name}')" style="margin-bottom: var(--space-md);">+ Create Task for ${member.name}</button>
+                            ${activeMemberTasks.length > 0 ? renderTeamMemberTasks(activeMemberTasks) : '<p class="text-muted">No active tasks.</p>'}
+                            
+                            <!-- Completed Tasks Section -->
+                            <div class="card" style="margin-top: var(--space-md); background-color: var(--bg-sidebar);">
+                                <div class="flex justify-between items-center" style="cursor: pointer;" onclick="toggleSection('team_completed_${member.id}')">
+                                    <h4>Completed Tasks (${completedMemberTasks.length})</h4>
+                                    <span id="toggle-team_completed_${member.id}">▼</span>
+                                </div>
+                                <div id="section-team_completed_${member.id}" class="hidden" style="margin-top: var(--space-md);">
+                                    ${completedMemberTasks.length > 0 ? renderTeamMemberTasks(completedMemberTasks) : '<p class="text-muted">No completed tasks yet.</p>'}
+                                </div>
+                            </div>
+                        </div>
+                    </div>`;
+            });
+            
+            // Handle unassigned tasks
+            const unassignedTasks = tasks.filter(t => !t.assignedTo);
+            const completedUnassignedTasks = unassignedTasks.filter(t => t.status === 'done');
+            const activeUnassignedTasks = unassignedTasks.filter(t => t.status !== 'done');
+            
+            // Check section state
+            const isUnassignedExpanded = getSectionState('team_unassigned');
+            
+            html += `
+                <div class="card" style="margin-bottom: var(--space-md);">
+                    <div class="flex justify-between items-center" style="cursor: pointer;" onclick="toggleTeamSection('unassigned')">
+                        <h3>Unassigned Tasks (${activeUnassignedTasks.length} active, ${completedUnassignedTasks.length} completed)</h3>
+                        <span id="team-toggle-unassigned">${isUnassignedExpanded ? '▲' : '▼'}</span>
+                    </div>
+                    <div id="team-tasks-unassigned" class="${isUnassignedExpanded ? '' : 'hidden'}" style="margin-top: var(--space-md);">
+                        <button class="btn btn-primary" onclick="openTaskModal()" style="margin-bottom: var(--space-md);">+ Create Unassigned Task</button>
+                        ${activeUnassignedTasks.length > 0 ? renderTeamMemberTasks(activeUnassignedTasks) : '<p class="text-muted">No active tasks.</p>'}
+                        
+                        <!-- Completed Tasks Section -->
+                        <div class="card" style="margin-top: var(--space-md); background-color: var(--bg-sidebar);">
+                            <div class="flex justify-between items-center" style="cursor: pointer;" onclick="toggleSection('team_completed_unassigned')">
+                                <h4>Completed Tasks (${completedUnassignedTasks.length})</h4>
+                                <span id="toggle-team_completed_unassigned">▼</span>
+                            </div>
+                            <div id="section-team_completed_unassigned" class="hidden" style="margin-top: var(--space-md);">
+                                ${completedUnassignedTasks.length > 0 ? renderTeamMemberTasks(completedUnassignedTasks) : '<p class="text-muted">No completed tasks yet.</p>'}
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+            
+            html += `</div></div>`;
+            return html;
+        }
+        
+        function renderTeamMemberTasks(tasks) {
+            if (tasks.length === 0) {
+                return '<p class="text-muted">No tasks assigned</p>';
+            }
+            
+            const priorityColors = { 'High': '#f87171', 'Medium': '#fbbf24', 'Low': '#34d399' };
+            
+            // Create task cards similar to My Tasks layout
+            let html = '<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: var(--space-md);">';
+            
+            tasks.forEach(task => {
+                const priorityColor = priorityColors[task.priority] || '#94a3b8';
+                const isCompleted = task.status === 'done';
+                
+                html += `
+                    <div class="card" style="position: relative;">
+                        <div class="flex justify-between items-start">
+                            <h4>${task.title}</h4>
+                            <div class="flex gap-2">
+                                <button onclick="editTask('${task.id}')" style="font-size: 0.75rem; color: var(--text-muted);">Edit</button>
+                                <button onclick="deleteTask('${task.id}')" style="font-size: 0.75rem; color: var(--danger);">Del</button>
+                            </div>
+                        </div>
+                        <p class="text-muted text-sm" style="margin-top: 4px;">${task.description || ''}</p>
+                        <div class="flex justify-between items-center" style="margin-top: var(--space-sm);">
+                            ${task.priority ? `<span class="task-tag">${task.priority}</span>` : ''}
+                            <div class="flex items-center gap-2">
+                                ${task.month ? `<span class="text-sm text-muted">${task.month}</span>` : ''}
+                                <span style="width: 8px; height: 8px; border-radius: 50%; background-color: ${priorityColor};" title="${task.priority || 'No Priority'}"></span>
+                            </div>
+                        </div>
+                        ${isCompleted ? 
+                            `<div style="margin-top: var(--space-md); width: 100%; text-align: center; padding: 0.5rem; background-color: var(--success); color: white; border-radius: var(--radius-md);">Completed</div>` : 
+                            `<button class="btn" onclick="markTaskComplete('${task.id}')" style="margin-top: var(--space-md); width: 100%;">Mark Complete</button>`}
+                    </div>`;
+            });
+            
+            html += '</div>';
+            return html;
+        }
+        
+        function toggleTeamSection(memberId) {
+            const tasksContainer = document.getElementById(`team-tasks-${memberId}`);
+            const toggleIcon = document.getElementById(`team-toggle-${memberId}`);
+            
+            if (tasksContainer.classList.contains('hidden')) {
+                tasksContainer.classList.remove('hidden');
+                toggleIcon.textContent = '▲';
+                setSectionState(`team_${memberId}`, true);
+            } else {
+                tasksContainer.classList.add('hidden');
+                toggleIcon.textContent = '▼';
+                setSectionState(`team_${memberId}`, false);
+            }
+        }
+        function renderProjects() {
+            const projects = State.data.projects;
+            let html = `<div class="flex justify-between items-center" style="margin-bottom: var(--space-lg);"><h2>Projects</h2><button class="btn btn-primary" onclick="openProjectModal()">+ New Project</button></div><div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: var(--space-md);">`;
+            if (projects.length === 0) {
+                html += `<p class="text-muted">No projects found.</p>`;
+            } else {
+                projects.forEach(project => {
+                    html += `<div class="card"><div class="flex justify-between items-center"><h3>${project.name}</h3><div class="flex gap-2"><button class="text-muted" onclick="editProject('${project.id}')" style="font-size: 0.875rem;">Edit</button><button class="text-muted" onclick="deleteProject('${project.id}')" style="font-size: 0.875rem; color: var(--danger);">Delete</button></div></div><p class="text-muted">${project.description || 'No description'}</p><p class="text-sm" style="margin-top: var(--space-sm); color: var(--primary);">${project.status || 'Active'}</p></div>`;
+                });
+            }
+            html += `</div>`;
+            DOM.contentArea.innerHTML = html;
+        }
+
+        function renderClaims() {
+            const claims = State.data.claims;
+            
+            // Filter active and completed claims
+            const activeClaims = claims.filter(c => c.status !== 'done');
+            const completedClaims = claims.filter(c => c.status === 'done');
+            
+            // Check section state
+            const isCompletedExpanded = getSectionState('claims_completed');
+            
+            let html = `
+                <div class="flex justify-between items-center" style="margin-bottom: var(--space-lg);">
+                    <h2>Claims</h2>
+                    <button class="btn btn-primary" onclick="openClaimModal()">+ New Claim</button>
+                </div>
+                
+                <div style="margin-bottom: var(--space-lg);">
+                    <!-- Active Claims Section -->
+                    <div class="card" style="margin-bottom: var(--space-md);">
+                        <div class="flex justify-between items-center">
+                            <h3>Active Claims (${activeClaims.length})</h3>
+                        </div>
+                        <div style="margin-top: var(--space-md);">
+                            ${activeClaims.length > 0 ? renderClaimList(activeClaims, 'active') : '<p class="text-muted">No active claims.</p>'}
+                        </div>
+                    </div>
+                    
+                    <!-- Completed Claims Section -->
+                    <div class="card" style="margin-bottom: var(--space-md);">
+                        <div class="flex justify-between items-center" style="cursor: pointer;" onclick="toggleSection('claims_completed')">
+                            <h3>Completed Claims (${completedClaims.length})</h3>
+                            <span id="toggle-claims_completed">${isCompletedExpanded ? '▲' : '▼'}</span>
+                        </div>
+                        <div id="section-claims_completed" class="${isCompletedExpanded ? '' : 'hidden'}" style="margin-top: var(--space-md);">
+                            ${completedClaims.length > 0 ? renderClaimList(completedClaims, 'completed') : '<p class="text-muted">No completed claims yet.</p>'}
+                        </div>
+                    </div>
+                </div>`;
+            
+            DOM.contentArea.innerHTML = html;
+        }
+        
+        function renderClaimList(claims, containerType) {
+            if (claims.length === 0) {
+                return '<p class="text-muted">No claims found.</p>';
+            }
+            
+            let html = '<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: var(--space-md);">';
+            
+            claims.forEach(claim => {
+                const claimDate = new Date(claim.date);
+                const formattedDate = claimDate.toLocaleDateString();
+                
+                html += `
+                    <div class="card" style="position: relative;">
+                        <div class="flex justify-between items-start">
+                            <h4>${claim.name}</h4>
+                            <div class="flex gap-2">
+                                <button onclick="editClaim('${claim.id}')" style="font-size: 0.75rem; color: var(--text-muted);">Edit</button>
+                                <button onclick="deleteClaim('${claim.id}')" style="font-size: 0.75rem; color: var(--danger);">Del</button>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center" style="margin-top: var(--space-sm);">
+                            <span style="font-weight: 600; color: var(--success);">$${parseFloat(claim.cost).toFixed(2)}</span>
+                            <span class="text-sm text-muted">${formattedDate}</span>
+                        </div>
+                        ${containerType === 'active' ? 
+                            `<button class="btn" onclick="markClaimComplete('${claim.id}')" style="margin-top: var(--space-md); width: 100%;">Mark Complete</button>` : 
+                            `<div style="margin-top: var(--space-md); width: 100%; text-align: center; padding: 0.5rem; background-color: var(--success); color: white; border-radius: var(--radius-md);">Completed</div>`}
+                    </div>`;
+            });
+            
+            html += '</div>';
+            return html;
+        }
+
+        
+        DOM.navItems.forEach(item => item.addEventListener('click', (e) => {
+            e.preventDefault();
+            const view = item.dataset.view;
+            navigateTo(view);
+        }));
+        function setupEventListeners() {
+            // Menu toggle for mobile
+            const menuToggle = document.getElementById('menu-toggle');
+            menuToggle.addEventListener('click', toggleMenu);
+            
+            // Handle window resize for responsive sidebar
+            window.addEventListener('resize', () => {
+                const sidebar = document.getElementById('sidebar');
+                const menuToggle = document.getElementById('menu-toggle');
+                
+                if (window.innerWidth <= 768) {
+                    menuToggle.style.display = 'block';
+                    sidebar.style.width = '60px';
+                } else {
+                    menuToggle.style.display = 'none';
+                    sidebar.style.width = '260px';
+                }
+            });
+            
+            // Initialize mobile view
+            if (window.innerWidth <= 768) {
+                document.getElementById('menu-toggle').style.display = 'block';
+                document.getElementById('sidebar').style.width = '60px';
+            }
+            
+            document.getElementById('team-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                try {
+                    const formData = new FormData(e.target);
+                    const id = formData.get('id');
+                    if (id) {
+                        const member = State.data.team.find(m => m.id === id);
+                        if (member) {
+                            member.name = formData.get('name');
+                            member.role = formData.get('role');
+                            member.email = formData.get('email');
+                            await db.update('team', member);
+                        }
+                    } else {
+                        const newMember = {
+                            id: generateUUID(),
+                            name: formData.get('name'),
+                            role: formData.get('role'),
+                            email: formData.get('email'),
+                            createdAt: new Date().toISOString()
+                        };
+                        await db.add('team', newMember);
+                        State.data.team.push(newMember);
+                    }
+                    closeModal('team-modal');
+                    if (State.currentView === 'team') renderTeam();
+                } catch (error) {
+                    console.error("Error saving team member:", error);
+                    alert("Failed to save team member.");
+                }
+            });
+            document.getElementById('task-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                try {
+                    const formData = new FormData(e.target);
+                    const id = formData.get('id');
+                    const taskType = formData.get('task-type'); // Get task type for my tasks
+                    const assignedTo = formData.get('assigned-to'); // Get assigned member for team tasks
+                    
+                    if (id) {
+                        const task = State.data.tasks.find(t => t.id === id);
+                        if (task) {
+                            task.title = formData.get('title');
+                            task.description = formData.get('description');
+                            task.priority = formData.get('priority');
+                            task.month = formData.get('month');
+                            // Removed dueDate as it's no longer used
+                            await db.update('tasks', task);
+                        }
+                    } else {
+                        // Determine assignment based on context
+                        let assignedToValue = assignedTo || ''; // Use explicit assignment if provided
+                        if (!assignedToValue && taskType) {
+                            // For my tasks, assign based on task type
+                            if (taskType === 'self') {
+                                // For self tasks, we don't assign to any team member to keep them isolated
+                                assignedToValue = 'self';
+                            } else if (taskType === 'lead') {
+                                // Lead tasks are unassigned
+                                assignedToValue = '';
+                            }
+                        }
+                        
+                        const newTask = {
+                            id: generateUUID(),
+                            title: formData.get('title'),
+                            description: formData.get('description'),
+                            priority: formData.get('priority'),
+                            month: formData.get('month'),
+                            // Removed dueDate as it's no longer used
+                            assignedTo: assignedToValue,
+                            status: 'todo',
+                            createdAt: new Date().toISOString()
+                        };
+                        await db.add('tasks', newTask);
+                        State.data.tasks.push(newTask);
+                    }
+                    closeModal('task-modal');
+                    if (State.currentView === 'tasks' || State.currentView === 'dashboard') {
+                        if (State.currentView === 'tasks') renderTaskBoard();
+                        if (State.currentView === 'dashboard') renderDashboard();
+                    }
+                } catch (error) {
+                    console.error("Error saving task:", error);
+                    alert("Failed to save task.");
+                }
+            });
+            document.getElementById('project-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                try {
+                    const formData = new FormData(e.target);
+                    const id = formData.get('id');
+                    if (id) {
+                        const project = State.data.projects.find(p => p.id === id);
+                        if (project) {
+                            project.name = formData.get('name');
+                            project.description = formData.get('description');
+                            project.status = formData.get('status');
+                            await db.update('projects', project);
+                        }
+                    } else {
+                        const newProject = {
+                            id: generateUUID(),
+                            name: formData.get('name'),
+                            description: formData.get('description'),
+                            status: formData.get('status'),
+                            createdAt: new Date().toISOString()
+                        };
+                        await db.add('projects', newProject);
+                        State.data.projects.push(newProject);
+                    }
+                    closeModal('project-modal');
+                    if (State.currentView === 'projects') renderProjects();
+                } catch (error) {
+                    console.error("Error saving project:", error);
+                    alert("Failed to save project.");
+                }
+            });
+            
+            document.getElementById('claim-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                try {
+                    const formData = new FormData(e.target);
+                    const id = formData.get('id');
+                    if (id) {
+                        const claim = State.data.claims.find(c => c.id === id);
+                        if (claim) {
+                            claim.name = formData.get('name');
+                            claim.cost = parseFloat(formData.get('cost'));
+                            claim.date = formData.get('date');
+                            await db.update('claims', claim);
+                        }
+                    } else {
+                        const newClaim = {
+                            id: generateUUID(),
+                            name: formData.get('name'),
+                            cost: parseFloat(formData.get('cost')),
+                            date: formData.get('date'),
+                            status: 'todo',
+                            createdAt: new Date().toISOString()
+                        };
+                        await db.add('claims', newClaim);
+                        State.data.claims.push(newClaim);
+                    }
+                    closeModal('claim-modal');
+                    if (State.currentView === 'claims') {
+                        renderClaims();
+                    } else {
+                        navigateTo('claims');
+                    }
+                } catch (error) {
+                    console.error("Error saving claim:", error);
+                    alert("Failed to save claim.");
+                }
+            });
+            
+            
+        }
+        async function init() {
+            console.log('Shafey PM Initialized');
+            try {
+                await db.init();
+                State.data.tasks = await db.getAll('tasks');
+                State.data.projects = await db.getAll('projects');
+                State.data.team = await db.getAll('team');
+                State.data.claims = await db.getAll('claims');
+                
+                // Data migration for existing tasks
+                State.data.tasks = State.data.tasks.map(task => {
+                    if (task.assignedTo === undefined) {
+                        task.assignedTo = '';
+                    }
+                    return task;
+                });
+                
+                
+                
+                console.log('Data loaded:', State.data);
+                setupEventListeners();
+                // Small delay to ensure DOM elements are ready
+                setTimeout(() => {
+                    navigateTo('tasks');
+                }, 10);
+            } catch (error) {
+                console.error("Failed to initialize app:", error);
+                DOM.contentArea.innerHTML = `<div class="card" style="color: var(--danger)">Error loading application data.</div>`;
+            }
+        }
+        // Initialize app after DOM is fully loaded
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            // DOM is already loaded
+            init();
+        }
+    </script>
+</body>
+
+</html>
